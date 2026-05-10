@@ -272,7 +272,7 @@ export default function Hero() {
           >
             <a
               href="#kontakt"
-              className="group relative inline-flex items-center gap-3 overflow-hidden bg-accent px-8 py-4 text-[11px] uppercase tracking-[0.24em] text-foreground transition-colors hover:bg-accent-hover sm:px-9 sm:py-[18px] sm:text-xs"
+              className="group relative inline-flex items-center gap-3 overflow-hidden bg-[#f7f3ee] px-8 py-4 text-[11px] uppercase tracking-[0.24em] text-[#7a1020] shadow-[0_6px_22px_rgba(0,0,0,0.22)] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-[2px] hover:bg-white hover:shadow-[0_10px_32px_rgba(0,0,0,0.3)] sm:px-9 sm:py-[18px] sm:text-xs"
             >
               <span className="relative z-10">Anfrage stellen</span>
               <svg
