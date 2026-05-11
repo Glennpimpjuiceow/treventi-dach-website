@@ -1,8 +1,25 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import { useRef, useEffect, useState } from "react";
 import type { ReactNode } from "react";
+
+function useCountUp(target: number, duration: number, active: boolean) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (!active) return;
+    let startTime: number | null = null;
+    const step = (ts: number) => {
+      if (!startTime) startTime = ts;
+      const progress = Math.min((ts - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.round(eased * target));
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }, [active, target, duration]);
+  return count;
+}
 import Image from "next/image";
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -35,6 +52,46 @@ function MaskLine({
   );
 }
 
+const facts = [
+  { target: 12, suffix: "+", label: "Jahre Manufaktur" },
+  { target: 100, suffix: "%", label: "Made in Europe" },
+  { target: 0, suffix: "", label: "Zwischenhändler" },
+];
+
+function StatItem({ target, suffix, label, active }: { target: number; suffix: string; label: string; active: boolean }) {
+  const count = useCountUp(target, 1400, active);
+  return (
+    <div className="flex flex-col gap-2">
+      <dt className="font-serif text-[1.5rem] font-medium leading-none tracking-tight text-white sm:text-[2.25rem] md:text-[2.6rem]">
+        {count}{suffix}
+      </dt>
+      <dd className="text-[10px] uppercase tracking-[0.24em] text-white/50 sm:text-[11px]">
+        {label}
+      </dd>
+    </div>
+  );
+}
+
+function MiniFacts() {
+  const ref = useRef<HTMLDListElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
+
+  return (
+    <motion.dl
+      ref={ref}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1], delay: 1.0 }}
+      className="mt-4 grid max-w-xl grid-cols-3 gap-4 border-t border-white/15 pt-4 sm:mt-12 sm:gap-8 sm:pt-10"
+    >
+      {facts.map((f) => (
+        <StatItem key={f.label} {...f} active={isInView} />
+      ))}
+    </motion.dl>
+  );
+}
+
 export default function AboutTreventi() {
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -50,7 +107,7 @@ export default function AboutTreventi() {
     <section
       ref={sectionRef}
       id="ueber-uns"
-      className="relative isolate w-full overflow-hidden bg-[#7a1020] py-24 text-white sm:py-28 md:py-36"
+      className="relative isolate w-full overflow-hidden bg-[#7a1020] py-8 text-white sm:py-28 md:py-36"
     >
       {/* Subtle radial vignette */}
       <div
@@ -58,7 +115,7 @@ export default function AboutTreventi() {
         className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_70%_30%,_rgba(234,1,0,0.08)_0%,_transparent_55%)]"
       />
 
-      <div className="relative z-10 mx-auto grid max-w-7xl grid-cols-1 gap-10 px-5 sm:gap-12 sm:px-8 md:grid-cols-12 md:gap-16 md:px-12 lg:px-16 xl:px-20">
+      <div className="relative z-10 mx-auto grid max-w-7xl grid-cols-1 gap-5 px-5 sm:gap-12 sm:px-8 md:grid-cols-12 md:gap-16 md:px-12 lg:px-16 xl:px-20">
         {/* Image Column — fadet von links rein, Parallax beim Scrollen, Hover-Zoom + Glow */}
         <motion.div
           initial={{ opacity: 0, x: -36 }}
@@ -67,7 +124,7 @@ export default function AboutTreventi() {
           transition={{ duration: 1.1, ease }}
           className="relative md:col-span-6 lg:col-span-6"
         >
-          <div className="group relative aspect-[4/5] overflow-hidden rounded-sm transition-shadow duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:shadow-[0_0_60px_rgba(234,1,0,0.38)] sm:aspect-[5/6] md:aspect-[4/5]">
+          <div className="group relative aspect-[5/2] overflow-hidden rounded-sm transition-shadow duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:shadow-[0_0_60px_rgba(234,1,0,0.38)] sm:aspect-[5/6] md:aspect-[4/5]">
             <motion.div
               style={{ y: imageY, scale: imageScale }}
               className="absolute inset-0 will-change-transform"
@@ -96,7 +153,7 @@ export default function AboutTreventi() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.8, ease, delay: 0.4 }}
-            className="mt-5 flex items-center gap-3 text-[10px] uppercase tracking-[0.28em] text-white/55 sm:mt-6 sm:text-xs"
+            className="mt-2 flex items-center gap-3 text-[10px] uppercase tracking-[0.28em] text-white/55 sm:mt-6 sm:text-xs"
           >
             <span className="h-px w-8 bg-white/40" />
             <span>Manufaktur · Prishtina</span>
@@ -111,7 +168,7 @@ export default function AboutTreventi() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, ease, delay: 0.1 }}
-            className="mb-6 flex items-center gap-3 sm:mb-8"
+            className="mb-3 flex items-center gap-3 sm:mb-8"
           >
             <span className="h-px w-10 bg-[#ea0100] sm:w-12" />
             <span className="text-[10px] uppercase tracking-[0.28em] text-white/70 sm:text-xs">
@@ -120,7 +177,7 @@ export default function AboutTreventi() {
           </motion.div>
 
           {/* Headline — 3 Zeilen, Stagger 0.2 / 0.4 / 0.6 */}
-          <h2 className="font-serif text-[2.25rem] font-medium leading-[1.04] tracking-tight text-white sm:text-5xl md:text-[3.4rem] lg:text-[4rem]">
+          <h2 className="font-serif text-[1.75rem] font-medium leading-[1.04] tracking-tight text-white sm:text-5xl md:text-[3.4rem] lg:text-[4rem]">
             <MaskLine delay={0.2}>Seit 2014.</MaskLine>
             <MaskLine delay={0.4}>Aus Kosovo.</MaskLine>
             <MaskLine delay={0.6}>
@@ -135,7 +192,7 @@ export default function AboutTreventi() {
             whileInView={{ scaleX: 1 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.85, ease, delay: 0.9 }}
-            className="mt-7 block h-[2px] w-24 origin-left bg-[#ea0100] sm:mt-8 sm:w-28"
+            className="mt-3 block h-[2px] w-24 origin-left bg-[#ea0100] sm:mt-8 sm:w-28"
           />
 
           {/* Body — 0.8s */}
@@ -144,7 +201,7 @@ export default function AboutTreventi() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.85, ease, delay: 0.8 }}
-            className="mt-7 max-w-xl space-y-5 text-[15px] font-light leading-relaxed text-white/85 sm:mt-8 sm:text-base lg:text-[17px]"
+            className="mt-3 max-w-xl space-y-3 text-[14px] font-light leading-relaxed text-white/85 sm:mt-8 sm:space-y-5 sm:text-base lg:text-[17px]"
           >
             <p>
               In unserer eigenen Manufaktur fertigen wir Premium-Innentüren
@@ -160,29 +217,8 @@ export default function AboutTreventi() {
             </p>
           </motion.div>
 
-          {/* Mini Facts — 1.0s */}
-          <motion.dl
-            initial={{ opacity: 0, x: 28 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.85, ease, delay: 1.0 }}
-            className="mt-10 grid max-w-xl grid-cols-3 gap-6 border-t border-white/15 pt-8 sm:mt-12 sm:gap-8 sm:pt-10"
-          >
-            {[
-              { value: "12+", label: "Jahre Manufaktur" },
-              { value: "100%", label: "Made in Europe" },
-              { value: "0", label: "Zwischenhändler" },
-            ].map((item) => (
-              <div key={item.label} className="flex flex-col gap-1">
-                <dt className="font-serif text-[1.75rem] font-medium leading-none tracking-tight text-white sm:text-[2rem] md:text-[2.25rem]">
-                  {item.value}
-                </dt>
-                <dd className="text-[10px] uppercase tracking-[0.22em] text-white/55 sm:text-[11px]">
-                  {item.label}
-                </dd>
-              </div>
-            ))}
-          </motion.dl>
+          {/* Mini Facts — Count-up Animation */}
+          <MiniFacts />
         </div>
       </div>
     </section>

@@ -94,7 +94,7 @@ export default function Hero() {
   return (
     <section
       ref={sectionRef}
-      className="relative isolate min-h-[100svh] w-full overflow-hidden bg-[#3a0810] text-foreground"
+      className="relative isolate min-h-[100svh] w-full overflow-hidden bg-[#1a1a1a] text-foreground"
     >
       {/* Parallax Background — Layer 0 */}
       <motion.div
@@ -111,15 +111,10 @@ export default function Hero() {
         />
       </motion.div>
 
-      {/* Weinrot-Tint, max ~50% am Top — Layer 10 */}
-      <motion.div
-        style={{ opacity: overlayOpacity }}
-        className="absolute inset-0 z-10 bg-[#7a1020]"
-      />
-      {/* Sanfte Vignette nur am unteren Rand für Bottom-Meta-Lesbarkeit — Layer 10 */}
-      <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-b from-transparent via-transparent to-[#5c0c18]/50" />
+      {/* Sanfte dunkle Vignette unten für Text-Lesbarkeit — Layer 10 */}
+      <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-b from-black/20 via-transparent to-black/40" />
       {/* Lokaler Schatten links unten für Headline-Lesbarkeit — Layer 10 */}
-      <div className="pointer-events-none absolute inset-0 z-10 bg-[radial-gradient(ellipse_at_25%_65%,_rgba(0,0,0,0.45)_0%,_transparent_55%)]" />
+      <div className="pointer-events-none absolute inset-0 z-10 bg-[radial-gradient(ellipse_at_25%_65%,_rgba(0,0,0,0.35)_0%,_transparent_55%)]" />
 
       {/* Header — Layer 30 */}
       <header className="relative z-30 flex items-center justify-between px-5 pt-5 sm:px-8 sm:pt-6 md:px-12 md:pt-8 lg:px-16 xl:px-20">
@@ -180,6 +175,18 @@ export default function Hero() {
             aria-modal="true"
             aria-label="Hauptnavigation"
           >
+            {/* X Close Button */}
+            <button
+              type="button"
+              onClick={() => setMenuOpen(false)}
+              aria-label="Menü schließen"
+              className="absolute right-5 top-5 z-10 flex h-10 w-10 items-center justify-center text-white/70 transition-colors hover:text-white sm:right-8 sm:top-6"
+            >
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path d="M3 3l14 14M17 3L3 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
+            </button>
+
             <nav className="relative flex h-full flex-col items-start justify-center px-8">
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -271,51 +278,22 @@ export default function Hero() {
             className="mt-10 flex flex-wrap items-center gap-5 sm:mt-12 lg:mt-14"
           >
             <a
-              href="#kontakt"
-              className="group relative inline-flex items-center gap-3 overflow-hidden bg-[#f7f3ee] px-8 py-4 text-[11px] uppercase tracking-[0.24em] text-[#7a1020] shadow-[0_6px_22px_rgba(0,0,0,0.22)] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-[2px] hover:bg-white hover:shadow-[0_10px_32px_rgba(0,0,0,0.3)] sm:px-9 sm:py-[18px] sm:text-xs"
+              href="/kontakt"
+              className="text-[11px] uppercase tracking-[0.24em] text-foreground/85 underline underline-offset-4 decoration-foreground/35 transition-all duration-300 hover:text-foreground hover:decoration-foreground/70 sm:text-xs"
             >
-              <span className="relative z-10">Anfrage stellen</span>
-              <svg
-                width="16"
-                height="11"
-                viewBox="0 0 18 12"
-                fill="none"
-                className="relative z-10 transition-transform group-hover:translate-x-1"
-                aria-hidden="true"
-              >
-                <path
-                  d="M1 6h16M12 1l5 5-5 5"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="square"
-                />
-              </svg>
+              Anfrage stellen
             </a>
 
             <a
               href="#kollektion"
-              className="group inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.24em] text-foreground/85 transition-colors hover:text-foreground sm:text-xs"
+              className="text-[11px] uppercase tracking-[0.24em] text-foreground/85 underline underline-offset-4 decoration-foreground/35 transition-all duration-300 hover:text-foreground hover:decoration-foreground/70 sm:text-xs"
             >
               Kollektion ansehen
-              <span className="block h-px w-6 bg-foreground/60 transition-all group-hover:w-10 group-hover:bg-foreground" />
             </a>
           </motion.div>
         </div>
       </motion.div>
 
-      {/* Bottom hairline meta */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.8, duration: 1 }}
-        className="pointer-events-none absolute bottom-4 left-5 right-5 z-20 hidden items-center justify-between text-[10px] uppercase tracking-[0.22em] text-foreground/55 sm:bottom-6 sm:left-8 sm:right-8 md:flex md:bottom-6 md:left-12 md:right-12 lg:left-16 lg:right-16 xl:left-20 xl:right-20"
-      >
-        <span className="flex items-center gap-3">
-          <span className="block h-px w-8 bg-foreground/35" />
-          Scroll
-        </span>
-        <span>Treventi Group · Prishtina</span>
-      </motion.div>
     </section>
   );
 }

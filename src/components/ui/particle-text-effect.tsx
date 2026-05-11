@@ -36,8 +36,8 @@ class WoodChip {
   isKilled = false;
 
   constructor(color: RGB) {
-    this.maxSpeed = 4.5 + Math.random() * 3.0;
-    this.maxForce = 0.45 + Math.random() * 0.2;
+    this.maxSpeed = 9 + Math.random() * 5;
+    this.maxForce = 1.0 + Math.random() * 0.4;
     const baseW = 1.8 + Math.random() * 2.4;
     this.width = baseW;
     this.height = baseW * (0.5 + Math.random() * 0.5);
@@ -100,17 +100,19 @@ class WoodChip {
 
   kill(width: number, height: number) {
     if (this.isKilled) return;
-    const cx = width / 2;
-    const cy = height / 2;
-    const angle = Math.random() * Math.PI * 2;
-    const distance = Math.max(width, height) * (0.7 + Math.random() * 0.5);
-    this.target.x = cx + Math.cos(angle) * distance;
-    this.target.y = cy + Math.sin(angle) * distance;
-    this.maxSpeed = 5 + Math.random() * 3;
-    this.maxForce = 0.5;
+    // Partikel fliegen radial von ihrer aktuellen Position weg
+    const dx = this.pos.x - width / 2;
+    const dy = this.pos.y - height / 2;
+    const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+    const angle = Math.atan2(dy, dx) + (Math.random() - 0.5) * 0.8;
+    const distance = Math.max(width, height) * (0.9 + Math.random() * 0.6);
+    this.target.x = this.pos.x + Math.cos(angle) * distance;
+    this.target.y = this.pos.y + Math.sin(angle) * distance;
+    this.maxSpeed = 14 + Math.random() * 8;
+    this.maxForce = 2.5;
     this.closeEnoughTarget = 0;
     this.alphaTarget = 0;
-    this.alphaRate = 0.02;
+    this.alphaRate = 0.055;
     this.isKilled = true;
   }
 }
@@ -216,7 +218,7 @@ export default function ParticleTextEffect({
         p.target = target;
         p.alpha = 0;
         p.alphaTarget = 1;
-        p.alphaRate = 0.03 + Math.random() * 0.03;
+        p.alphaRate = 0.08 + Math.random() * 0.05;
         return p;
       });
     }

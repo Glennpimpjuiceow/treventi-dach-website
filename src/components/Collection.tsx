@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const categories = [
   {
@@ -10,42 +11,49 @@ const categories = [
     title: "Innentüren Modern",
     sub: "12 Modelle verfügbar",
     image: "/doors/01-dust-grey-meta-retta.jpg",
+    href: null,
   },
   {
     number: "02",
     title: "Innentüren Klassisch",
     sub: "9 Modelle verfügbar",
     image: "/doors/06-bakersfield-walnut.jpg",
+    href: null,
   },
   {
     number: "03",
     title: "Glastüren",
     sub: "6 Modelle verfügbar",
     image: "/doors/11-eins-mit-der-natur-1.jpg",
+    href: null,
   },
   {
     number: "04",
     title: "Schiebetüren",
     sub: "8 Modelle verfügbar",
     image: "/doors/02-strada-snow-white.jpg",
+    href: null,
   },
   {
     number: "05",
     title: "Eingangstüren",
     sub: "5 Modelle verfügbar",
     image: "/doors/07-pamplona.jpg",
+    href: null,
   },
   {
     number: "06",
     title: "Spezialanfertigungen",
     sub: "Auf Anfrage",
     image: "/doors/10-deggendreof-olive-green.jpg",
+    href: "/spezialanfertigungen",
   },
 ];
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
 export default function Collection() {
+  const router = useRouter();
   return (
     <section
       id="kollektion"
@@ -94,6 +102,7 @@ export default function Collection() {
           <motion.button
             key={cat.number}
             type="button"
+            onClick={() => { if (cat.href) router.push(cat.href); }}
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
@@ -107,8 +116,8 @@ export default function Collection() {
               className="pointer-events-none absolute left-0 top-0 z-10 block h-full w-[3px] origin-top scale-y-0 bg-[#EA0100] transition-transform duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-y-100"
             />
 
-            {/* Image — aspect 4:5, Zoom on Hover */}
-            <div className="relative aspect-[4/5] w-full overflow-hidden bg-[#EFEAE3]">
+            {/* Image — aspect 3:2 mobile, 4:5 desktop */}
+            <div className="relative aspect-[3/2] w-full overflow-hidden bg-[#EFEAE3] sm:aspect-[4/5]">
               <div className="absolute inset-0 transition-transform duration-[700ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.1]">
                 <Image
                   src={cat.image}
@@ -121,7 +130,7 @@ export default function Collection() {
             </div>
 
             {/* Text-Bereich auf weißem Background */}
-            <div className="relative flex flex-1 items-end justify-between gap-4 px-7 py-7 sm:px-8 sm:py-8">
+            <div className="relative flex flex-1 items-end justify-between gap-4 px-5 py-5 sm:px-8 sm:py-8">
               <div className="flex flex-col">
                 <span className="text-[10px] font-medium uppercase tracking-[0.28em] text-[#EA0100] sm:text-[11px]">
                   Kategorie {cat.number}
