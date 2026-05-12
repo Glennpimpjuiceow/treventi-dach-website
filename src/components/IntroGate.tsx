@@ -7,13 +7,23 @@ import ParticleTextEffect from "@/components/ui/particle-text-effect";
 
 // fly-in 0.9s + hold 1.5s + disperse 1s = 3.4s in Canvas
 // + 0.5s exit-fade auf dem Container = 3.9s total
-const FORM_MS = 750;
-const HOLD_MS = 2000;
-const DISPERSE_MS = 600;
-const EXIT_FADE_MS = 450;
+const FORM_MS = 675;
+const HOLD_MS = 1800;
+const DISPERSE_MS = 540;
+const EXIT_FADE_MS = 405;
 const fadeEase = [0.76, 0, 0.24, 1] as const;
 
 type Phase = "pending" | "playing" | "done";
+
+const SEEN_KEY = "treventi-intro-seen";
+
+function markSeen() {
+  try {
+    sessionStorage.setItem(SEEN_KEY, "1");
+  } catch {
+    /* sessionStorage kann z.B. im Privatmodus blockiert sein */
+  }
+}
 
 export default function IntroGate({ children }: { children: ReactNode }) {
   const [phase, setPhase] = useState<Phase>("pending");
@@ -23,7 +33,15 @@ export default function IntroGate({ children }: { children: ReactNode }) {
     if (typeof window === "undefined") return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) {
+
+    let alreadySeen = false;
+    try {
+      alreadySeen = sessionStorage.getItem(SEEN_KEY) === "1";
+    } catch {
+      /* ignore */
+    }
+
+    if (reduced || alreadySeen) {
       setPhase("done");
       return;
     }
@@ -32,6 +50,7 @@ export default function IntroGate({ children }: { children: ReactNode }) {
     document.body.style.overflow = "hidden";
 
     safetyTimerRef.current = window.setTimeout(() => {
+      markSeen();
       setPhase("done");
     }, FORM_MS + HOLD_MS + DISPERSE_MS + 1500);
 
@@ -52,6 +71,7 @@ export default function IntroGate({ children }: { children: ReactNode }) {
       window.clearTimeout(safetyTimerRef.current);
       safetyTimerRef.current = null;
     }
+    markSeen();
     setPhase("done");
   }, []);
 
@@ -60,6 +80,7 @@ export default function IntroGate({ children }: { children: ReactNode }) {
       window.clearTimeout(safetyTimerRef.current);
       safetyTimerRef.current = null;
     }
+    markSeen();
     setPhase("done");
   }, []);
 

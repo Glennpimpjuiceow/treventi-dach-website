@@ -20,7 +20,9 @@ function useCountUp(target: number, duration: number, active: boolean) {
   }, [active, target, duration]);
   return count;
 }
+
 import Image from "next/image";
+import Link from "next/link";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -43,7 +45,7 @@ function MaskLine({
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 1.0, ease, delay }}
+        transition={{ duration: 0.7, ease, delay }}
         className="block will-change-transform"
       >
         {children}
@@ -55,17 +57,17 @@ function MaskLine({
 const facts = [
   { target: 12, suffix: "+", label: "Jahre Manufaktur" },
   { target: 100, suffix: "%", label: "Made in Europe" },
-  { target: 0, suffix: "", label: "Zwischenhändler" },
+  { target: 0, suffix: "", label: "Zwischen­händler" },
 ];
 
 function StatItem({ target, suffix, label, active }: { target: number; suffix: string; label: string; active: boolean }) {
-  const count = useCountUp(target, 1400, active);
+  const count = useCountUp(target, 980, active);
   return (
     <div className="flex flex-col gap-2">
       <dt className="font-serif text-[1.5rem] font-medium leading-none tracking-tight text-white sm:text-[2.25rem] md:text-[2.6rem]">
         {count}{suffix}
       </dt>
-      <dd className="text-[10px] uppercase tracking-[0.24em] text-white/50 sm:text-[11px]">
+      <dd className="text-[9px] uppercase leading-snug tracking-[0.16em] text-white/50 sm:text-[11px] sm:tracking-[0.24em]">
         {label}
       </dd>
     </div>
@@ -82,8 +84,8 @@ function MiniFacts() {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1], delay: 1.0 }}
-      className="mt-4 grid max-w-xl grid-cols-3 gap-4 border-t border-white/15 pt-4 sm:mt-12 sm:gap-8 sm:pt-10"
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.7 }}
+      className="mt-4 grid max-w-xl grid-cols-3 gap-3 border-t border-white/15 pt-4 sm:mt-12 sm:gap-8 sm:pt-10"
     >
       {facts.map((f) => (
         <StatItem key={f.label} {...f} active={isInView} />
@@ -121,7 +123,7 @@ export default function AboutTreventi() {
           initial={{ opacity: 0, x: -36 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 1.1, ease }}
+          transition={{ duration: 0.77, ease }}
           className="relative md:col-span-6 lg:col-span-6"
         >
           <div className="group relative aspect-[5/2] overflow-hidden rounded-sm transition-shadow duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:shadow-[0_0_60px_rgba(234,1,0,0.38)] sm:aspect-[5/6] md:aspect-[4/5]">
@@ -152,7 +154,7 @@ export default function AboutTreventi() {
             initial={{ opacity: 0, x: -24 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.8, ease, delay: 0.4 }}
+            transition={{ duration: 0.56, ease, delay: 0.28 }}
             className="mt-2 flex items-center gap-3 text-[10px] uppercase tracking-[0.28em] text-white/55 sm:mt-6 sm:text-xs"
           >
             <span className="h-px w-8 bg-white/40" />
@@ -167,7 +169,7 @@ export default function AboutTreventi() {
             initial={{ opacity: 0, x: 28 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8, ease, delay: 0.1 }}
+            transition={{ duration: 0.56, ease, delay: 0.07 }}
             className="mb-3 flex items-center gap-3 sm:mb-8"
           >
             <span className="h-px w-10 bg-[#ea0100] sm:w-12" />
@@ -178,9 +180,9 @@ export default function AboutTreventi() {
 
           {/* Headline — 3 Zeilen, Stagger 0.2 / 0.4 / 0.6 */}
           <h2 className="font-serif text-[1.75rem] font-medium leading-[1.04] tracking-tight text-white sm:text-5xl md:text-[3.4rem] lg:text-[4rem]">
-            <MaskLine delay={0.2}>Seit 2014.</MaskLine>
-            <MaskLine delay={0.4}>Aus Kosovo.</MaskLine>
-            <MaskLine delay={0.6}>
+            <MaskLine delay={0.14}>Seit 2014.</MaskLine>
+            <MaskLine delay={0.28}>Aus Kosovo.</MaskLine>
+            <MaskLine delay={0.42}>
               <span className="text-white/65">Für Europa.</span>
             </MaskLine>
           </h2>
@@ -191,30 +193,57 @@ export default function AboutTreventi() {
             initial={{ scaleX: 0 }}
             whileInView={{ scaleX: 1 }}
             viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.85, ease, delay: 0.9 }}
+            transition={{ duration: 0.6, ease, delay: 0.63 }}
             className="mt-3 block h-[2px] w-24 origin-left bg-[#ea0100] sm:mt-8 sm:w-28"
           />
 
-          {/* Body — 0.8s */}
+          {/* Body — gekürzt */}
           <motion.div
             initial={{ opacity: 0, x: 28 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.85, ease, delay: 0.8 }}
-            className="mt-3 max-w-xl space-y-3 text-[14px] font-light leading-relaxed text-white/85 sm:mt-8 sm:space-y-5 sm:text-base lg:text-[17px]"
+            transition={{ duration: 0.6, ease, delay: 0.56 }}
+            className="mt-3 max-w-xl text-[14px] font-light leading-relaxed text-white/85 sm:mt-8 sm:text-base lg:text-[17px]"
           >
             <p>
-              In unserer eigenen Manufaktur fertigen wir Premium-Innentüren
-              für anspruchsvolle Bauprojekte in Deutschland, Österreich und
-              der Schweiz — vom Holzeinkauf über die Verarbeitung bis zur
-              finalen Qualitätskontrolle.
+              Premium-Innentüren aus eigener Manufaktur — für anspruchsvolle
+              Bauprojekte in der DACH-Region. Direkt vom Hersteller, kein
+              Zwischenhandel, keine Kompromisse.
             </p>
-            <p className="text-white/70">
-              Architekturbüros und Bauträger schätzen unsere kompromisslose
-              Verarbeitung, kurze Lieferzeiten und die persönliche Betreuung
-              — direkt vom Hersteller. Kein Zwischenhandel, keine versteckten
-              Aufschläge, keine Kompromisse.
-            </p>
+          </motion.div>
+
+          {/* Link zur Über-uns-Seite — Stil wie "Mehr über unseren Prozess" */}
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.5, ease, delay: 0.7 }}
+            className="mt-5 sm:mt-7"
+          >
+            <Link
+              href="/ueber-uns"
+              className="group inline-flex items-center gap-2 text-[12px] font-medium uppercase tracking-[0.22em] text-white transition-colors hover:text-[#ea0100] sm:text-[13px]"
+            >
+              <span className="relative">
+                Mehr über uns
+                <span className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-100 bg-white transition-colors group-hover:bg-[#ea0100]" />
+              </span>
+              <svg
+                aria-hidden="true"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1"
+              >
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="13 6 19 12 13 18" />
+              </svg>
+            </Link>
           </motion.div>
 
           {/* Mini Facts — Count-up Animation */}

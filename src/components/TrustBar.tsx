@@ -45,7 +45,7 @@ export default function TrustBar() {
           initial={{ opacity: 0, y: 14 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.7, ease }}
+          transition={{ duration: 0.49, ease }}
           className="mb-4 flex items-center justify-center gap-3"
         >
           <span className="h-px w-8 bg-[#ea0100]" />
@@ -59,7 +59,7 @@ export default function TrustBar() {
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.8, ease, delay: 0.06 }}
+          transition={{ duration: 0.56, ease, delay: 0.042 }}
           className="font-serif text-[1.7rem] font-medium leading-tight tracking-tight text-[#7a1020] sm:text-3xl md:text-[2.2rem]"
         >
           Vertraut von Profis
@@ -69,7 +69,7 @@ export default function TrustBar() {
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.7, ease, delay: 0.18 }}
+          transition={{ duration: 0.49, ease, delay: 0.126 }}
           className="mt-3 text-sm font-light leading-relaxed text-[#888888] sm:mt-4 sm:text-base"
         >
           Architekturbüros &amp; Bauträger in der DACH-Region
@@ -81,7 +81,7 @@ export default function TrustBar() {
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 0.9, ease, delay: 0.2 }}
+        transition={{ duration: 0.63, ease, delay: 0.14 }}
         className="relative"
       >
         <Carousel
@@ -137,7 +137,7 @@ export default function TrustBar() {
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 0.7, ease, delay: 0.5 }}
+        transition={{ duration: 0.49, ease, delay: 0.35 }}
         className="mx-auto mt-14 max-w-2xl px-5 text-center text-[11px] uppercase tracking-[0.22em] text-[#888888] sm:mt-16 sm:px-8 sm:text-xs"
       >
         Auswahl realisierter B2B-Projekte · Deutschland · Österreich · Schweiz

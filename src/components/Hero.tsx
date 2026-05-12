@@ -13,7 +13,7 @@ import Image from "next/image";
 
 const navItems = [
   { label: "Kollektion", href: "#kollektion" },
-  { label: "Über uns", href: "#ueber-uns" },
+  { label: "Über uns", href: "/ueber-uns" },
   { label: "Referenzen", href: "#referenzen" },
   { label: "Kontakt", href: "#kontakt" },
 ];

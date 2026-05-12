@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
 import { ArrowRight, Check } from "lucide-react";
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -8,24 +9,25 @@ const ease = [0.22, 1, 0.36, 1] as const;
 const ink = "#2C2725";
 const red = "#EA0100";
 
-const drawPath = (delay: number, duration = 0.9) => ({
+const drawPath = (inView: boolean, delay: number, duration = 0.72) => ({
   initial: { pathLength: 0, opacity: 0 },
-  whileInView: { pathLength: 1, opacity: 1 },
-  viewport: { once: true, margin: "-120px" },
+  animate: inView ? { pathLength: 1, opacity: 1 } : { pathLength: 0, opacity: 0 },
   transition: {
     pathLength: { duration, ease, delay },
-    opacity: { duration: 0.2, delay },
+    opacity: { duration: 0.16, delay },
   },
 });
 
-const fadeIn = (delay: number) => ({
+const fadeIn = (inView: boolean, delay: number) => ({
   initial: { opacity: 0 },
-  whileInView: { opacity: 1 },
-  viewport: { once: true, margin: "-120px" },
-  transition: { duration: 0.5, ease, delay },
+  animate: inView ? { opacity: 1 } : { opacity: 0 },
+  transition: { duration: 0.4, ease, delay },
 });
 
 export default function BespokeSketch() {
+  const sketchRef = useRef<HTMLDivElement>(null);
+  const sketchInView = useInView(sketchRef, { once: true, amount: 0.1 });
+
   return (
     <section
       id="masgeschneidert"
@@ -49,7 +51,7 @@ export default function BespokeSketch() {
       <div className="relative z-10 mx-auto grid max-w-7xl grid-cols-1 items-center gap-14 px-5 sm:gap-16 sm:px-8 md:grid-cols-12 md:gap-12 md:px-12 lg:gap-16 lg:px-16 xl:px-20">
         {/* Links — SVG Sketch */}
         <div className="md:col-span-7">
-          <div className="relative mx-auto w-full max-w-[560px]">
+          <div ref={sketchRef} className="relative mx-auto w-full max-w-[560px]">
             {/* Eckmarken — Architekten-Blueprint Look */}
             <CornerMarks />
 
@@ -71,7 +73,7 @@ export default function BespokeSketch() {
                 y2="700"
                 stroke={ink}
                 strokeWidth="1"
-                {...drawPath(0.05, 0.7)}
+                {...drawPath(sketchInView, 0.04, 0.56)}
               />
 
               {/* Türrahmen außen */}
@@ -82,7 +84,7 @@ export default function BespokeSketch() {
                 height="620"
                 stroke={ink}
                 strokeWidth="1.8"
-                {...drawPath(0.25, 1.0)}
+                {...drawPath(sketchInView, 0.2, 0.81)}
               />
 
               {/* Türrahmen innen (Falz) */}
@@ -94,7 +96,7 @@ export default function BespokeSketch() {
                 stroke={ink}
                 strokeWidth="1"
                 strokeOpacity="0.5"
-                {...drawPath(0.6, 0.7)}
+                {...drawPath(sketchInView, 0.48, 0.56)}
               />
 
               {/* Türblatt */}
@@ -105,7 +107,7 @@ export default function BespokeSketch() {
                 height="590"
                 stroke={ink}
                 strokeWidth="1.6"
-                {...drawPath(0.85, 0.95)}
+                {...drawPath(sketchInView, 0.69, 0.77)}
               />
 
               {/* Paneel oben */}
@@ -116,7 +118,7 @@ export default function BespokeSketch() {
                 height="220"
                 stroke={ink}
                 strokeWidth="1.2"
-                {...drawPath(1.4, 0.6)}
+                {...drawPath(sketchInView, 1.13, 0.48)}
               />
 
               {/* Paneel unten */}
@@ -127,7 +129,7 @@ export default function BespokeSketch() {
                 height="260"
                 stroke={ink}
                 strokeWidth="1.2"
-                {...drawPath(1.55, 0.6)}
+                {...drawPath(sketchInView, 1.25, 0.48)}
               />
 
               {/* Türgriff — Rosette */}
@@ -137,7 +139,7 @@ export default function BespokeSketch() {
                 r="6"
                 stroke={ink}
                 strokeWidth="1.4"
-                {...drawPath(1.85, 0.35)}
+                {...drawPath(sketchInView, 1.49, 0.28)}
               />
               {/* Türgriff — Hebel */}
               <motion.line
@@ -147,7 +149,7 @@ export default function BespokeSketch() {
                 y2="400"
                 stroke={ink}
                 strokeWidth="1.8"
-                {...drawPath(1.95, 0.3)}
+                {...drawPath(sketchInView, 1.57, 0.24)}
               />
 
               {/* Scharniere — oben & unten (rechte Seite) */}
@@ -158,7 +160,7 @@ export default function BespokeSketch() {
                 height="36"
                 stroke={ink}
                 strokeWidth="1.2"
-                {...drawPath(2.05, 0.25)}
+                {...drawPath(sketchInView, 1.65, 0.2)}
               />
               <motion.rect
                 x="446"
@@ -167,13 +169,13 @@ export default function BespokeSketch() {
                 height="36"
                 stroke={ink}
                 strokeWidth="1.2"
-                {...drawPath(2.15, 0.25)}
+                {...drawPath(sketchInView, 1.73, 0.2)}
               />
 
               {/* === MASSANGABEN === */}
 
               {/* Horizontal: 860 mm — Breite (oben) */}
-              <motion.g {...fadeIn(2.35)}>
+              <motion.g {...fadeIn(sketchInView, 1.89)}>
                 {/* Hilfslinien hoch */}
                 <line
                   x1="120"
@@ -202,15 +204,14 @@ export default function BespokeSketch() {
                   stroke={red}
                   strokeWidth="1.2"
                   initial={{ pathLength: 0 }}
-                  whileInView={{ pathLength: 1 }}
-                  viewport={{ once: true, margin: "-120px" }}
-                  transition={{ duration: 0.7, ease, delay: 2.4 }}
+                  animate={sketchInView ? { pathLength: 1 } : { pathLength: 0 }}
+                  transition={{ duration: 0.56, ease, delay: 1.93 }}
                 />
                 {/* Pfeile */}
                 <Tick x={120} y={50} dir="left" color={red} />
                 <Tick x={480} y={50} dir="right" color={red} />
                 {/* Label */}
-                <motion.g {...fadeIn(2.85)}>
+                <motion.g {...fadeIn(sketchInView, 2.29)}>
                   <rect
                     x="270"
                     y="36"
@@ -233,7 +234,7 @@ export default function BespokeSketch() {
               </motion.g>
 
               {/* Vertikal: 2100 mm — Höhe (rechts) */}
-              <motion.g {...fadeIn(2.55)}>
+              <motion.g {...fadeIn(sketchInView, 2.05)}>
                 <line
                   x1="480"
                   y1="80"
@@ -260,13 +261,12 @@ export default function BespokeSketch() {
                   stroke={red}
                   strokeWidth="1.2"
                   initial={{ pathLength: 0 }}
-                  whileInView={{ pathLength: 1 }}
-                  viewport={{ once: true, margin: "-120px" }}
-                  transition={{ duration: 0.9, ease, delay: 2.6 }}
+                  animate={sketchInView ? { pathLength: 1 } : { pathLength: 0 }}
+                  transition={{ duration: 0.72, ease, delay: 2.09 }}
                 />
                 <Tick x={530} y={80} dir="up" color={red} />
                 <Tick x={530} y={700} dir="down" color={red} />
-                <motion.g {...fadeIn(3.15)}>
+                <motion.g {...fadeIn(sketchInView, 2.54)}>
                   <rect
                     x="500"
                     y="378"
@@ -289,7 +289,7 @@ export default function BespokeSketch() {
               </motion.g>
 
               {/* Mini-Label "Treventi · Custom" unten */}
-              <motion.g {...fadeIn(3.0)}>
+              <motion.g {...fadeIn(sketchInView, 2.42)}>
                 <text
                   x="120"
                   y="730"
@@ -324,8 +324,8 @@ export default function BespokeSketch() {
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.7, ease, delay: 0.1 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ duration: 0.49, ease, delay: 0.07 }}
             className="mb-6 flex items-center gap-3 sm:mb-8"
           >
             <span className="h-px w-10 bg-[#EA0100]" />
@@ -338,8 +338,8 @@ export default function BespokeSketch() {
           <motion.h2
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.85, ease, delay: 0.25 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ duration: 0.6, ease, delay: 0.175 }}
             className="font-serif text-[2.2rem] font-medium leading-[1.05] tracking-tight text-[#2C2725] sm:text-[2.6rem] md:text-[2.9rem] lg:text-[3.2rem]"
           >
             Jede Tür beginnt
@@ -351,8 +351,8 @@ export default function BespokeSketch() {
           <motion.p
             initial={{ opacity: 0, y: 14 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8, ease, delay: 0.5 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ duration: 0.56, ease, delay: 0.35 }}
             className="mt-7 max-w-md text-[15px] font-light leading-relaxed text-[#2C2725]/80 sm:mt-8 sm:text-base lg:text-[17px]"
           >
             Ihre Vision. Unsere Präzision. Vom ersten Strich bis zur fertigen
@@ -363,8 +363,8 @@ export default function BespokeSketch() {
           <motion.ul
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.6, ease, delay: 0.75 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ duration: 0.42, ease, delay: 0.525 }}
             className="mt-8 space-y-3.5 sm:mt-10"
           >
             {[
@@ -376,8 +376,8 @@ export default function BespokeSketch() {
                 key={item}
                 initial={{ opacity: 0, x: 16 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.6, ease, delay: 0.85 + i * 0.1 }}
+                viewport={{ once: true, amount: 0.1 }}
+                transition={{ duration: 0.42, ease, delay: 0.595 + i * 0.07 }}
                 className="flex items-start gap-3 text-[14px] font-light text-[#2C2725]/85 sm:text-[15px]"
               >
                 <span className="mt-[3px] flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full border border-[#EA0100]/40">
@@ -396,8 +396,8 @@ export default function BespokeSketch() {
             href="#prozess"
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.7, ease, delay: 1.25 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ duration: 0.49, ease, delay: 0.875 }}
             className="group mt-10 inline-flex items-center gap-2 text-[12px] font-medium uppercase tracking-[0.22em] text-[#2C2725] transition-colors hover:text-[#EA0100] sm:mt-12 sm:text-[13px]"
           >
             <span className="relative">
