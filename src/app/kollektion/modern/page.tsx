@@ -334,7 +334,7 @@ export default function ModernPage() {
 
         {/* Slider */}
         <div className="relative mx-auto max-w-7xl px-5 sm:px-8 md:px-12 lg:px-16 xl:px-20">
-          <div className="relative aspect-[4/5] w-full overflow-hidden rounded-sm bg-black/40 sm:aspect-[16/10] md:aspect-[16/9]">
+          <div className="relative mx-auto aspect-[2/3] w-full max-w-[280px] overflow-hidden rounded-sm bg-black/40 sm:max-w-xs md:max-w-sm">
             <AnimatePresence mode="wait" custom={direction}>
               <motion.div
                 key={index}

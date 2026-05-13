@@ -174,7 +174,7 @@ export default function Footer() {
       <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-8 md:px-12 lg:px-16 xl:px-20">
           <span className="text-[10px] uppercase tracking-[0.2em] text-white/40 sm:text-[11px]">
-            © {new Date().getFullYear()} Treventi Group GmbH
+            © {new Date().getFullYear()} Treventi Group sh.p.k.
           </span>
           <span className="text-[10px] uppercase tracking-[0.2em] text-white/30 sm:text-[11px]">
             Made in Europe · Seit 2014

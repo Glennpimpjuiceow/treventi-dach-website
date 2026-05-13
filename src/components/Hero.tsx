@@ -15,7 +15,7 @@ const navItems = [
   { label: "Kollektion", href: "#kollektion" },
   { label: "Über uns", href: "/ueber-uns" },
   { label: "Referenzen", href: "#referenzen" },
-  { label: "Kontakt", href: "#kontakt" },
+  { label: "Kontakt", href: "/kontakt" },
 ];
 
 const ease = [0.22, 1, 0.36, 1] as const;

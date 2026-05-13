@@ -22,27 +22,13 @@ const categories = [
   },
   {
     number: "03",
-    title: "Glastüren",
-    sub: "6 Modelle verfügbar",
-    image: "/kollektion/categories/glas.jpg",
-    href: null,
-  },
-  {
-    number: "04",
     title: "Schiebetüren",
     sub: "8 Modelle verfügbar",
     image: "/kollektion/categories/schiebe.jpg",
     href: null,
   },
   {
-    number: "05",
-    title: "Eingangstüren",
-    sub: "5 Modelle verfügbar",
-    image: "/kollektion/categories/eingang.jpg",
-    href: null,
-  },
-  {
-    number: "06",
+    number: "04",
     title: "Spezialanfertigungen",
     sub: "Auf Anfrage",
     image: "/kollektion/categories/spezial.jpg",
@@ -211,7 +197,7 @@ export default function Collection() {
           transition={{ duration: 0.49, ease, delay: 0.126 }}
           className="mt-5 text-sm font-light leading-relaxed text-[#2C2725]/60 sm:mt-6 sm:text-base"
         >
-          Sechs Linien &mdash; eine Philosophie.
+          Vier Linien &mdash; eine Philosophie.
         </motion.p>
       </div>
 

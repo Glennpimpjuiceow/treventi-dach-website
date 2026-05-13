@@ -39,8 +39,8 @@ const milestones = [
   },
   {
     year: "2020",
-    title: "DACH-Expansion",
-    text: "Erste Großprojekte in Deutschland, Österreich und der Schweiz. Architekten und Bauträger werden zu langfristigen Partnern.",
+    title: "Erste Lieferungen nach DACH",
+    text: "Treventi liefert die ersten Türen nach Deutschland, Österreich und in die Schweiz — und legt damit den Grundstein für den westeuropäischen Markt.",
   },
   {
     year: "Heute",
@@ -121,7 +121,7 @@ export default function UeberUnsPage() {
           transition={{ duration: 0.6, ease, delay: 0.65 }}
           className="mt-8 max-w-2xl text-[15px] font-light leading-relaxed text-[#2C2725]/75 sm:mt-10 sm:text-base md:text-[17px] lg:text-lg"
         >
-          Treventi Group GmbH — Ihr Tor zu hochwertigen Innentüren. Seit 2014
+          Treventi Group sh.p.k. — Ihr Tor zu hochwertigen Innentüren. Seit 2014
           fertigen wir in unserer eigenen Manufaktur in Prishtina Türen, die
           mehr sind als ein Übergang: Sie sind Teil der Architektur eines
           Raums.

@@ -1,34 +1,96 @@
 "use client";
 
-import { motion, useInView, useReducedMotion } from "framer-motion";
-import Image from "next/image";
-import { Play, Volume2, VolumeX } from "lucide-react";
+import {
+  motion,
+  useMotionTemplate,
+  useMotionValueEvent,
+  useScroll,
+  useTransform,
+  useReducedMotion,
+} from "framer-motion";
+import { Volume2, VolumeX } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-const ease = [0.22, 1, 0.36, 1] as const;
+const VIDEO_SRC: string | undefined = "/video/marketing.mp4";
 
-const VIDEO_SRC: string | undefined = undefined;
-const POSTER_SRC = "/hero/treventi-DSC04385-COPY.jpg";
+const SCROLL_HEIGHT = 1200;
+const INITIAL_TOP = 10;
+const INITIAL_BOTTOM = 70;
+const INITIAL_LEFT = 14;
+const INITIAL_RIGHT = 86;
+const VIDEO_PLAY_THRESHOLD = 0.2;
+const SNAP_TRIGGER_PROGRESS = 0.9;
+const SNAP_DURATION_MS = 1500;
 
 export default function WerkstattVideo() {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const animationRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [muted, setMuted] = useState(true);
   const [videoErrored, setVideoErrored] = useState(false);
+  const [isSnapping, setIsSnapping] = useState(false);
 
-  const inView = useInView(containerRef, {
-    margin: "-15% 0px -15% 0px",
-    amount: 0.4,
-  });
   const reducedMotion = useReducedMotion();
 
+  const { scrollYProgress } = useScroll({
+    target: animationRef,
+    offset: ["start start", "end end"],
+  });
+
+  const clipTop = useTransform(scrollYProgress, [0, 1], [INITIAL_TOP, 0]);
+  const clipBottom = useTransform(scrollYProgress, [0, 1], [INITIAL_BOTTOM, 100]);
+  const clipLeft = useTransform(scrollYProgress, [0, 1], [INITIAL_LEFT, 0]);
+  const clipRight = useTransform(scrollYProgress, [0, 1], [INITIAL_RIGHT, 100]);
+  const clipPath = useMotionTemplate`polygon(${clipLeft}% ${clipTop}%, ${clipRight}% ${clipTop}%, ${clipRight}% ${clipBottom}%, ${clipLeft}% ${clipBottom}%)`;
+
+  const videoScale = useTransform(scrollYProgress, [0, 1], [1.7, 1]);
+
+  const snappedRef = useRef(false);
+  const lastProgressRef = useRef(0);
+
+  useMotionValueEvent(scrollYProgress, "change", (progress) => {
+    if (VIDEO_SRC && !reducedMotion) {
+      const v = videoRef.current;
+      if (v) {
+        if (progress >= VIDEO_PLAY_THRESHOLD && progress <= 1) {
+          if (v.paused) v.play().catch(() => {});
+        } else if (!v.paused) {
+          v.pause();
+        }
+      }
+    }
+
+    const increasing = progress > lastProgressRef.current;
+    lastProgressRef.current = progress;
+
+    if (
+      !reducedMotion &&
+      progress >= SNAP_TRIGGER_PROGRESS &&
+      increasing &&
+      !snappedRef.current
+    ) {
+      snappedRef.current = true;
+      setIsSnapping(true);
+      window.setTimeout(() => setIsSnapping(false), SNAP_DURATION_MS);
+    }
+    if (progress < 0.8) snappedRef.current = false;
+  });
+
   useEffect(() => {
-    if (!VIDEO_SRC || reducedMotion) return;
-    const v = videoRef.current;
-    if (!v) return;
-    if (inView) v.play().catch(() => {});
-    else v.pause();
-  }, [inView, reducedMotion]);
+    if (!isSnapping) return;
+    const lockedY = window.scrollY;
+    const prevent = (e: Event) => e.preventDefault();
+    const lockScroll = () => {
+      if (window.scrollY !== lockedY) window.scrollTo(0, lockedY);
+    };
+    window.addEventListener("wheel", prevent, { passive: false });
+    window.addEventListener("touchmove", prevent, { passive: false });
+    window.addEventListener("scroll", lockScroll, { passive: true });
+    return () => {
+      window.removeEventListener("wheel", prevent);
+      window.removeEventListener("touchmove", prevent);
+      window.removeEventListener("scroll", lockScroll);
+    };
+  }, [isSnapping]);
 
   useEffect(() => {
     const v = videoRef.current;
@@ -38,101 +100,69 @@ export default function WerkstattVideo() {
   const showVideo = VIDEO_SRC && !videoErrored;
 
   return (
-    <section className="relative bg-[#F7F3EE] py-24 sm:py-28 md:py-32">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8 md:px-12 lg:px-16 xl:px-20">
-        {/* Header */}
-        <div className="max-w-2xl">
-          <motion.div
-            initial={{ opacity: 0, x: -16 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.49, ease }}
-            className="flex items-center gap-3"
-          >
-            <span className="h-px w-10 bg-[#EA0100]" />
-            <span className="text-[10px] uppercase tracking-[0.28em] text-[#EA0100] sm:text-[11px]">
-              Einblick
-            </span>
-          </motion.div>
-
-          <motion.h2
-            initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.6, ease, delay: 0.07 }}
-            className="mt-5 font-serif text-[2rem] font-medium leading-[1.04] tracking-tight text-[#2C2725] sm:text-4xl md:text-[3rem] lg:text-[3.4rem]"
-          >
-            20 Sekunden in unserer Werkstatt.
-          </motion.h2>
-
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.49, ease, delay: 0.14 }}
-            className="mt-5 max-w-xl text-[14px] font-light leading-relaxed text-[#2C2725]/70 sm:text-base"
-          >
-            Ein Blick hinter die Türen unserer Manufaktur in Prishtina.
-          </motion.p>
+    <section className="relative bg-[#F7F3EE]">
+      {/* Header — eigene Section, normaler Flow, immer voll knallig */}
+      <div className="mx-auto max-w-4xl px-5 pt-28 pb-6 text-center sm:px-8 sm:pt-32 sm:pb-8 md:pt-36 md:pb-10">
+        <div className="mb-5 flex items-center justify-center gap-3">
+          <span className="h-px w-8 bg-[#EA0100]" />
+          <span className="text-[10px] font-medium uppercase tracking-[0.28em] text-[#EA0100] sm:text-[11px]">
+            Einblick
+          </span>
+          <span className="h-px w-8 bg-[#EA0100]" />
         </div>
 
-        {/* Video-Frame */}
-        <motion.div
-          ref={containerRef}
-          initial={{ opacity: 0, scale: 1.04, y: 24 }}
-          whileInView={{ opacity: 1, scale: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.84, ease, delay: 0.21 }}
-          className="relative mt-10 aspect-[21/9] w-full overflow-hidden rounded-sm bg-[#0E0B0A] ring-1 ring-[#2C2725]/10 shadow-[0_24px_60px_-20px_rgba(44,39,37,0.35)] sm:mt-14"
-        >
-          {showVideo ? (
-            <>
-              <video
-                ref={videoRef}
-                src={VIDEO_SRC}
-                poster={POSTER_SRC}
-                muted
-                playsInline
-                preload="metadata"
-                loop
-                className="h-full w-full object-cover"
-                aria-label="Treventi Werkstatt — Produktionsprozess"
-                onError={() => setVideoErrored(true)}
-              />
-              <button
-                type="button"
-                onClick={() => setMuted((m) => !m)}
-                aria-label={muted ? "Ton einschalten" : "Ton ausschalten"}
-                aria-pressed={!muted}
-                className="absolute bottom-4 right-4 grid h-10 w-10 place-items-center rounded-full bg-black/45 text-white/90 ring-1 ring-white/15 backdrop-blur-sm transition hover:bg-black/65 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#EA0100] sm:bottom-5 sm:right-5"
-              >
-                {muted ? <VolumeX size={16} strokeWidth={1.6} /> : <Volume2 size={16} strokeWidth={1.6} />}
-              </button>
-            </>
-          ) : (
-            <>
-              <Image
-                src={POSTER_SRC}
-                alt="Treventi Werkstatt — Vorschau"
-                fill
-                sizes="(max-width: 768px) 100vw, 80vw"
-                className="object-cover brightness-[0.65]"
-                priority={false}
-              />
-              <span className="absolute left-4 top-4 text-[10px] uppercase tracking-[0.28em] text-white/70 sm:left-5 sm:top-5">
-                Bald · Video
-              </span>
-              <div
-                aria-hidden="true"
-                className="absolute inset-0 grid place-items-center"
-              >
-                <div className="grid h-16 w-16 place-items-center rounded-full bg-black/35 ring-2 ring-[#EA0100]/70 backdrop-blur-sm">
-                  <Play size={22} strokeWidth={1.6} className="ml-1 text-white" />
-                </div>
-              </div>
-            </>
-          )}
-        </motion.div>
+        <h2 className="font-serif text-[2rem] font-medium leading-[1.05] tracking-tight text-[#2C2725] sm:text-4xl md:text-[3rem] lg:text-[3.4rem]">
+          20 Sekunden in unserer Werkstatt.
+        </h2>
+
+        <p className="mt-5 text-sm font-light leading-relaxed text-[#2C2725]/60 sm:mt-6 sm:text-base">
+          Ein Blick hinter die Türen unserer Manufaktur in Prishtina.
+        </p>
+      </div>
+
+      {/* Animation-Block — eigener Container für useScroll */}
+      <div
+        ref={animationRef}
+        className="relative w-full"
+        style={{ height: `calc(${SCROLL_HEIGHT}px + 100vh)` }}
+      >
+        <div className="sticky top-0 h-screen w-full overflow-hidden">
+          <motion.div
+            className="absolute inset-0 bg-[#0E0B0A]"
+            style={{
+              clipPath,
+              willChange: "clip-path",
+            }}
+          >
+            {showVideo ? (
+              <>
+                <motion.video
+                  ref={videoRef}
+                  src={VIDEO_SRC}
+                  muted
+                  playsInline
+                  preload="auto"
+                  loop
+                  className="absolute inset-0 h-full w-full object-cover"
+                  style={{
+                    scale: videoScale,
+                  }}
+                  aria-label="Treventi Werkstatt — Produktionsprozess"
+                  onError={() => setVideoErrored(true)}
+                />
+                <button
+                  type="button"
+                  onClick={() => setMuted((m) => !m)}
+                  aria-label={muted ? "Ton einschalten" : "Ton ausschalten"}
+                  aria-pressed={!muted}
+                  className="absolute bottom-6 right-6 z-20 grid h-11 w-11 place-items-center rounded-full bg-black/45 text-white/90 ring-1 ring-white/15 backdrop-blur-sm transition hover:bg-black/65 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#EA0100] sm:bottom-8 sm:right-8"
+                >
+                  {muted ? <VolumeX size={18} strokeWidth={1.6} /> : <Volume2 size={18} strokeWidth={1.6} />}
+                </button>
+              </>
+            ) : null}
+          </motion.div>
+        </div>
       </div>
     </section>
   );
